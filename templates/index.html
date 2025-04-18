@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Найдите идеальную нейросеть для решения ваших задач в нашем каталоге ИИ-сервисов">
+    <meta name="keywords" content="ИИ, нейросети, искусственный интеллект, сервисы ИИ, поиск нейросетей">
+    <meta name="author" content="Planetus">
+    <meta property="og:title" content="Поиск ИИ сервисов">
+    <meta property="og:description" content="Найдите идеальную нейросеть для решения ваших задач в нашем каталоге ИИ-сервисов">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aisearch.icu/">
+    <title>Поиск ИИ сервисов</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='32' height='32' fill='none' stroke='%234c6ef5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2'/%3E%3Cpath d='m4.93 4.93 4.24 4.24'/%3E%3Cpath d='m14.83 14.83 4.24 4.24'/%3E%3Cpath d='M14.83 9.17 9.17 14.83'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>Поиск<span>ИИ</span></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/" class="active">Главная</a></li>
+                    <li><a href="/services">Сервисы</a></li>
+                    <li><a href="/about">О нас</a></li>
+                    <li><a href="/contacts">Контакты</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h2>Найдите идеальную нейросеть для вашей задачи</h2>
+                <p>Просто опишите, что вы хотите сделать, и мы подберем подходящие ИИ-сервисы</p>
+                
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="Опишите свою задачу...">
+                        <button id="search-button">
+                            <span class="button-text">Найти</span>
+                            <span class="search-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="search-examples">
+                        <p>Примеры: <span>создать изображение</span> <span>написать текст</span> <span>проанализировать данные</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results-section">
+                <div class="results-header">
+                    <h3>Результаты поиска</h3>
+                </div>
+                <div class="results-container" id="results-container"></div>
+                <div class="pagination-container" id="pagination-container"></div>
+            </section>
+        </main>
+
+        <footer class="watermark">
+            <div class="made-with-love">
+                <div class="heart-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                </div>
+                <p>Сделано с любовью <a href="https://lolz.live/threads/7807080/" target="_blank" class="planetus">Planetus</a></p>
+            </div>
+            <div class="open-source">
+                <p>Открытый исходный код доступен на <a href="https://github.com/planetus/ai-services-search" target="_blank" class="github">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    GitHub
+                </a></p>
+            </div>
+        </footer>
+    </div>
+    <script src="/script.js"></script>
+</body>
+</html>

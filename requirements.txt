@@ -1,0 +1,5 @@
+quart
+hypercorn
+werkzeug
+jinja2
+g4f
