@@ -9,7 +9,7 @@
 
 ## 📸 Скриншот
 
-![ПоискИИ](screenshot.png)
+<img src="https://i.ibb.co/vvYQTgyy/image.png" alt="AIsearch Preview" width="800">
 
 ## ✨ Особенности
 
