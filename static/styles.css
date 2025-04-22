@@ -254,10 +254,14 @@ nav ul li a:hover, nav ul li a.active {
 }
 
 .results-header {
-    display: flex;
+    display: none;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+}
+
+.results-header.visible {
+    display: flex;
 }
 
 .results-container {
@@ -342,8 +346,8 @@ nav ul li a:hover, nav ul li a.active {
 }
 
 .pricing-badge.freemium {
-    background-color: rgba(52, 152, 219, 0.15);
-    color: #3498db;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
 }
 
 .pricing-badge.unknown {
@@ -565,15 +569,15 @@ footer.watermark {
 }
 
 .featured-service {
-    border: 1px solid rgba(52, 152, 219, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .service-badge {
     position: absolute;
     top: 1.5rem;
     right: 1.5rem;
-    background-color: rgba(52, 152, 219, 0.15);
-    color: #3498db;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
     padding: 0.3rem 0.8rem;
     border-radius: 50px;
     font-size: 0.8rem;
@@ -625,7 +629,8 @@ footer.watermark {
 }
 
 .feature svg {
-    stroke: #3498db;
+    stroke: #ffffff;
+    margin-right: 8px;
 }
 
 .feature span {
@@ -643,8 +648,8 @@ footer.watermark {
 }
 
 .service-button:hover {
-    background-color: #3498db;
-    transform: translateY(-2px);
+    background-color: #ffffff;
+    color: #000000;
 }
 
 .coming-soon {
@@ -704,9 +709,9 @@ footer.watermark {
 }
 
 .lolz-link {
-    color: #3498db;
+    color: #ffffff;
+    text-decoration: underline;
     font-weight: 500;
-    transition: var(--transition);
 }
 
 .lolz-link:hover {
@@ -743,8 +748,8 @@ footer.watermark {
 }
 
 .about-button:hover {
-    background-color: #3498db;
-    transform: translateY(-2px);
+    background-color: #ffffff;
+    color: #000000;
 }
 
 .about-button svg {
@@ -877,7 +882,7 @@ footer.watermark {
 }
 
 .alt-text a {
-    color: #3498db;
+    color: #ffffff;
     font-weight: 500;
 }
 
@@ -1037,6 +1042,7 @@ footer.watermark {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    font-family: 'Inter';
     min-width: 2.5rem;
     height: 2.5rem;
     padding: 0 0.75rem;
@@ -1045,7 +1051,7 @@ footer.watermark {
     border-radius: 8px;
     color: var(--text-color);
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     transition: var(--transition);
 }
@@ -1061,9 +1067,9 @@ footer.watermark {
 }
 
 .pagination-button.page-number.active {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-    color: white;
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
 }
 
 .pagination-button.prev,

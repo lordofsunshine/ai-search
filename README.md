@@ -1,7 +1,7 @@
 # ПоискИИ 🔍
 
 [![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/downloads/)
-[![Quart](https://img.shields.io/badge/Quart-0.19+-purple.svg)](https://pgjones.gitlab.io/quart/)
+[![Quart](https://img.shields.io/badge/Quart-0.18+-purple.svg)](https://pgjones.gitlab.io/quart/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-7289DA.svg)](https://discord.gg/FtvCbrc7ZU)
 
@@ -9,7 +9,7 @@
 
 ## 📸 Скриншот
 
-<img src="https://i.ibb.co/vvYQTgyy/image.png" alt="AIsearch Preview" width="800">
+![ПоискИИ](screenshot.png)
 
 ## ✨ Особенности
 
@@ -32,7 +32,7 @@
 python run.py
 ```
 
-Сервер будет доступен по адресу: http://0.0.0.0:8000
+Сервер будет доступен по адресу: http://localhost:8000
 
 ## 🛠️ Технологии
 

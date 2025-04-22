@@ -2,14 +2,74 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
     const resultsContainer = document.getElementById('results-container');
-    const resultsHeader = document.querySelector('.results-header h3');
-    const searchExamples = document.querySelectorAll('.search-examples span');
+    const resultsHeader = document.querySelector('.results-header');
+    const searchExamples = document.querySelector('.search-examples');
     const paginationContainer = document.getElementById('pagination-container');
     
     let allResults = [];
     let currentPage = 1;
     const resultsPerPage = 3;
     let isSearchResults = false;
+    
+    const exampleQueries = [
+        'создать изображение',
+        'написать текст',
+        'проанализировать данные',
+        'перевести аудио в текст',
+        'улучшить фотографию',
+        'редактировать видео',
+        'сгенерировать музыку',
+        'написать код',
+        'создать презентацию',
+        'распознать объекты',
+        'переводчик с английского',
+        'создать 3D модель',
+        'редактировать PDF',
+        'написать сценарий',
+        'создать аватар',
+        'генерация голоса',
+        'обработать таблицы',
+        'найти информацию',
+        'создать логотип',
+        'проверить текст',
+        'нарисовать иллюстрацию',
+        'создать чат-бота',
+        'перевести текст',
+        'удалить фон с фото',
+        'улучшить SEO',
+        'обучить нейросеть',
+        'анализ настроения текста',
+        'рекомендательная система',
+        'распознавание речи',
+        'создать анимацию'
+    ];
+    
+    function getRandomExamples() {
+        const shuffled = [...exampleQueries];
+        
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        
+        return shuffled.slice(0, 3);
+    }
+    
+    function updateExamples() {
+        const randomExamples = getRandomExamples();
+        searchExamples.innerHTML = `
+            <p>Примеры: <span>${randomExamples[0]}</span> <span>${randomExamples[1]}</span> <span>${randomExamples[2]}</span></p>
+        `;
+        
+        document.querySelectorAll('.search-examples span').forEach(example => {
+            example.addEventListener('click', () => {
+                searchInput.value = example.textContent;
+                searchInput.focus();
+            });
+        });
+    }
+    
+    updateExamples();
     
     let placeholders = [
         'Найти нейросеть для создания изображений...',
@@ -86,7 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        resultsHeader.textContent = isSearchResults ? 'Результаты поиска' : 'Популярные сервисы';
+        resultsHeader.classList.add('visible');
+        resultsHeader.querySelector('h3').textContent = isSearchResults ? 'Результаты поиска' : 'Популярные сервисы';
         
         const startIndex = (page - 1) * resultsPerPage;
         const endIndex = Math.min(startIndex + resultsPerPage, allResults.length);
@@ -101,6 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function displayNoResults() {
+        resultsHeader.classList.remove('visible');
+        
         const noResults = document.createElement('div');
         noResults.className = 'no-results';
         noResults.innerHTML = `
@@ -111,13 +174,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3 style="margin-bottom: 1rem;">Ничего не найдено</h3>
                 <p>Попробуйте изменить запрос или выбрать один из примеров ниже.</p>
                 <div class="search-examples" style="margin-top: 1.5rem;">
-                    <span>создать изображение</span>
-                    <span>написать текст</span>
-                    <span>анализ данных</span>
+                    ${getRandomExamples().map(example => `<span>${example}</span>`).join(' ')}
                 </div>
             </div>
         `;
         resultsContainer.appendChild(noResults);
+        
+        noResults.querySelectorAll('.search-examples span').forEach(example => {
+            example.addEventListener('click', () => {
+                searchInput.value = example.textContent;
+                searchInput.focus();
+            });
+        });
         
         paginationContainer.style.display = 'none';
     }
@@ -209,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function performSearch(query) {
         resultsContainer.innerHTML = '';
         paginationContainer.style.display = 'none';
+        resultsHeader.classList.remove('visible');
         allResults = [];
         currentPage = 1;
         isSearchResults = true;
@@ -290,6 +359,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function loadPopularServices() {
         isSearchResults = false;
+        resultsContainer.innerHTML = '';
+        resultsHeader.classList.remove('visible');
         
         const loadingText = document.createElement('div');
         loadingText.className = 'loading-text';
@@ -401,11 +472,11 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(typeEffect, typingSpeed);
     }
     
-    searchExamples.forEach(example => {
-        example.addEventListener('click', () => {
-            searchInput.value = example.textContent;
+    searchExamples.addEventListener('click', (event) => {
+        if (event.target.tagName === 'SPAN') {
+            searchInput.value = event.target.textContent;
             searchInput.focus();
-        });
+        }
     });
     
     searchButton.addEventListener('click', () => {
