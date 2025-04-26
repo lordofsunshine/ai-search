@@ -4,10 +4,41 @@ from werkzeug.exceptions import HTTPException
 import os
 import json
 import asyncio
+import base64
 
 app = Quart(__name__, static_folder='static')
 
 client = Client()
+
+async def error_page_handler(error_code):
+    error_messages = {
+        400: 'Некорректный запрос',
+        401: 'Требуется авторизация',
+        403: 'Доступ запрещен',
+        404: 'Страница не найдена',
+        500: 'Внутренняя ошибка сервера',
+        503: 'Сервис временно недоступен'
+    }
+    
+    error_descriptions = {
+        400: 'Сервер не может обработать запрос из-за ошибки клиента.',
+        401: 'Для доступа к этому ресурсу требуется авторизация.',
+        403: 'У вас нет прав доступа к этому ресурсу.',
+        404: 'Запрашиваемая страница не существует или была перемещена.',
+        500: 'На сервере произошла непредвиденная ошибка. Попробуйте позже.',
+        503: 'Сервис временно недоступен из-за технических работ или перегрузки.'
+    }
+    
+    error_message = error_messages.get(error_code, 'Произошла ошибка')
+    error_description = error_descriptions.get(error_code, 'Что-то пошло не так. Попробуйте вернуться на главную страницу или повторить попытку позже.')
+    
+    context = {
+        'error_code': error_code,
+        'error_message': error_message,
+        'error_description': error_description
+    }
+    
+    return await render_template('error.html', **context), error_code
 
 @app.errorhandler(400)
 async def bad_request(error):
@@ -41,36 +72,6 @@ async def handle_http_exception(error):
 async def handle_exception(error):
     return await error_page_handler(500)
 
-async def error_page_handler(error_code):
-    error_messages = {
-        400: 'Некорректный запрос',
-        401: 'Требуется авторизация',
-        403: 'Доступ запрещен',
-        404: 'Страница не найдена',
-        500: 'Внутренняя ошибка сервера',
-        503: 'Сервис временно недоступен'
-    }
-    
-    error_descriptions = {
-        400: 'Сервер не может обработать запрос из-за ошибки клиента.',
-        401: 'Для доступа к этому ресурсу требуется авторизация.',
-        403: 'У вас нет прав доступа к этому ресурсу.',
-        404: 'Запрашиваемая страница не существует или была перемещена.',
-        500: 'На сервере произошла непредвиденная ошибка. Попробуйте позже.',
-        503: 'Сервис временно недоступен из-за технических работ или перегрузки.'
-    }
-    
-    error_message = error_messages.get(error_code, 'Произошла ошибка')
-    error_description = error_descriptions.get(error_code, 'Что-то пошло не так. Попробуйте вернуться на главную страницу или повторить попытку позже.')
-    
-    context = {
-        'error_code': error_code,
-        'error_message': error_message,
-        'error_description': error_description
-    }
-    
-    return await render_template('error.html', **context), error_code
-
 @app.route('/')
 async def index():
     return await render_template('index.html')
@@ -103,6 +104,14 @@ async def about():
 @app.route('/contacts.html')
 async def contacts():
     return await render_template('contacts.html')
+
+@app.route('/img2prompt')
+async def img2prompt_page():
+    return await render_template('img2prompt.html')
+
+@app.route('/<path:filename>')
+async def static_files(filename):
+    return await send_from_directory('static', filename)
 
 @app.route('/api/search')
 async def search():
@@ -254,10 +263,125 @@ async def search():
             "services": []
         })
 
-@app.route('/<path:filename>')
-async def static_files(filename):
-    return await send_from_directory('static', filename)
+@app.route('/api/img2prompt', methods=['POST'])
+async def analyze_image():
+    try:
+        data = await request.get_json()
+        if not data or 'image' not in data:
+            return json.dumps({
+                "error": "Изображение не было предоставлено"
+            }), 400
+        
+        image_data = data['image']
+        
+        prompt = """Проанализируй изображение и создай детальный промпт, который можно использовать 
+        в нейросетях для генерации подобного изображения (например, в Midjourney, DALL-E или Stable Diffusion).
+        
+        Промпт должен содержать:
+        1. Детальное описание содержимого изображения
+        2. Стиль и художественные особенности
+        3. Цветовую гамму и освещение
+        4. Композицию и перспективу
+        5. Технические аспекты (например, 4k, фотореалистичность, 3D рендер)
+        
+        Верни промпт на английском языке, он должен быть максимально подробным и эффективным для генерации аналогичного изображения.
+        В ответе используй только текст промпта, без пояснений."""
+        
+        refusal_phrases = [
+            "I'm sorry, but I can't assist with that",
+            "I apologize, but I cannot",
+            "I'm unable to assist",
+            "Sorry, I cannot",
+            "I can't assist with"
+        ]
+        
+        prompt_generated = False
+        max_attempts = 3
+        attempts = 0
+        prompt_text = ""
+        
+        while not prompt_generated and attempts < max_attempts:
+            attempts += 1
+            try:
+                response = await asyncio.to_thread(
+                    lambda: client.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=[
+                            {"role": "user", "content": [
+                                {"type": "text", "text": prompt},
+                                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_data}"}}
+                            ]}
+                        ],
+                        web_search=False
+                    )
+                )
+                
+                prompt_text = response.choices[0].message.content.strip()
+                
+                if not any(phrase.lower() in prompt_text.lower() for phrase in refusal_phrases):
+                    prompt_generated = True
+                else:
+                    prompt = """Опиши изображение детально в виде промпта для генератора изображений. 
+                    Сфокусируйся на объектах, стиле, цветах, освещении, композиции и технических аспектах.
+                    Используй нейтральный стиль описания. Не отказывайся анализировать изображение.
+                    Твоя задача - просто описать то, что ты видишь, чтобы можно было воссоздать похожее изображение.
+                    Верни только текст промпта на английском языке."""
+                    
+                    await asyncio.sleep(1)
+            except Exception as e:
+                print(f"Ошибка при попытке {attempts}: {e}")
+                await asyncio.sleep(2)
+        
+        if not prompt_generated:
+            return json.dumps({
+                "error": "Не удалось сгенерировать промпт после нескольких попыток. Пожалуйста, загрузите другое изображение."
+            }), 500
+        
+        translation_prompt = f"""Переведи следующий промпт для генерации изображений на русский язык, сохраняя все детали и технические термины:
+        
+        {prompt_text}
+        
+        Верни только перевод, без дополнительных комментариев."""
+        
+        translation_response = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": translation_prompt}],
+                web_search=False
+            )
+        )
+        
+        translated_prompt = translation_response.choices[0].message.content.strip()
+        
+        thinking_prompt = "Напиши очень короткое (1-2 предложения) содержательное рассуждение о том, что ты заметил в этом изображении и какие ключевые элементы ты выделил для промпта."
+        
+        thinking_response = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "user", "content": [
+                        {"type": "text", "text": thinking_prompt},
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_data}"}}
+                    ]}
+                ],
+                web_search=False
+            )
+        )
+        
+        thinking_text = thinking_response.choices[0].message.content
+        
+        return json.dumps({
+            "prompt": prompt_text,
+            "translated_prompt": translated_prompt,
+            "thinking": thinking_text
+        })
+        
+    except Exception as e:
+        print(f"Ошибка при анализе изображения: {e}")
+        return json.dumps({
+            "error": "Произошла ошибка при анализе изображения. Пожалуйста, попробуйте еще раз позже."
+        }), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8000))
-    app.run(host='127.0.0.1', port=port) 
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='127.0.0.1', port=port)
