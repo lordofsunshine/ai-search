@@ -109,6 +109,10 @@ async def contacts():
 async def img2prompt_page():
     return await render_template('img2prompt.html')
 
+@app.route('/humanizer')
+async def humanizer_page():
+    return await render_template('humanizer.html')
+
 @app.route('/<path:filename>')
 async def static_files(filename):
     return await send_from_directory('static', filename)
@@ -380,6 +384,135 @@ async def analyze_image():
         print(f"Ошибка при анализе изображения: {e}")
         return json.dumps({
             "error": "Произошла ошибка при анализе изображения. Пожалуйста, попробуйте еще раз позже."
+        }), 500
+
+@app.route('/api/analyze_text', methods=['POST'])
+async def analyze_text():
+    try:
+        data = await request.get_json()
+        text = data.get('text', '')
+        
+        if not text or len(text) < 6:
+            return json.dumps({
+                'error': 'Текст слишком короткий для анализа'
+            }), 400
+
+        prompt = f"""Проанализируй следующий текст и определи вероятность того, что он был написан искусственным интеллектом.
+        Текст:
+        "{text}"
+        
+        Оцени вероятность в процентах от 0 до 100, где:
+        0-20% - очень низкая вероятность (почти наверняка написано человеком)
+        21-40% - низкая вероятность
+        41-60% - средняя вероятность
+        61-80% - высокая вероятность
+        81-100% - очень высокая вероятность (почти наверняка написано ИИ)
+        
+        Учитывай следующие признаки текста, написанного ИИ:
+        - Слишком правильный и формальный язык
+        - Отсутствие эмоциональности и индивидуальности
+        - Шаблонные фразы и выражения
+        - Повторяющиеся структуры предложений
+        - Избыточное использование связующих слов
+        - Отсутствие ярких сравнений и метафор
+        - Отсутствие разговорных выражений и неологизмов
+        
+        Верни свой ответ в формате JSON:
+        {{
+          "ai_score": число от 0 до 100,
+          "explanation": "объяснение результата в 1-2 предложениях",
+          "thinking": "краткое рассуждение о признаках в тексте в 1-2 предложениях"
+        }}
+        
+        JSON должен быть валидным. Верни только JSON без дополнительного текста."""
+        
+        response = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                web_search=False
+            )
+        )
+        
+        result = response.choices[0].message.content
+        
+        json_start = result.find('{')
+        json_end = result.rfind('}') + 1
+        
+        if json_start != -1 and json_end != -1:
+            json_result = result[json_start:json_end]
+            return json_result
+        else:
+            return json.dumps({
+                'error': 'Ошибка при анализе текста'
+            }), 500
+            
+    except Exception as e:
+        print(f"Error analyzing text: {e}")
+        return json.dumps({
+            'error': 'Ошибка при анализе текста'
+        }), 500
+
+@app.route('/api/humanize_text', methods=['POST'])
+async def humanize_text():
+    try:
+        data = await request.get_json()
+        text = data.get('text', '')
+        
+        if not text or len(text) < 6:
+            return json.dumps({
+                'error': 'Текст слишком короткий для обработки'
+            }), 400
+
+        prompt = f"""Переработай следующий текст, чтобы он выглядел как написанный человеком, а не искусственным интеллектом.
+        
+        Исходный текст:
+        "{text}"
+        
+        Сделай следующие изменения:
+        1. Добавь индивидуальный стиль и характер
+        2. Сделай структуру предложений менее шаблонной и более разнообразной
+        3. Используй более естественные переходы между идеями
+        4. Добавь эмоциональность, где это уместно
+        5. Включи несколько разговорных выражений
+        6. Избегай избыточных связующих слов и шаблонных фраз
+        7. Используй более яркие и оригинальные метафоры или сравнения
+        8. Добавь некоторые "несовершенства", характерные для человеческой речи
+        
+        При этом сохрани основной смысл и ключевую информацию исходного текста.
+        
+        Верни свой ответ в формате JSON:
+        {{
+          "humanized_text": "переработанный текст"
+        }}
+        
+        JSON должен быть валидным. Верни только JSON без дополнительного текста."""
+        
+        response = await asyncio.to_thread(
+            lambda: client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                web_search=False
+            )
+        )
+        
+        result = response.choices[0].message.content
+        
+        json_start = result.find('{')
+        json_end = result.rfind('}') + 1
+        
+        if json_start != -1 and json_end != -1:
+            json_result = result[json_start:json_end]
+            return json_result
+        else:
+            return json.dumps({
+                'error': 'Ошибка при обработке текста'
+            }), 500
+            
+    except Exception as e:
+        print(f"Error humanizing text: {e}")
+        return json.dumps({
+            'error': 'Ошибка при обработке текста'
         }), 500
 
 if __name__ == '__main__':

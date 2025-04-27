@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Проверьте текст на признаки написания ИИ и сделайте его более 'человечным'">
+    <meta name="keywords" content="ИИ, нейросети, искусственный интеллект, humanizer, анализ текста, определение AI текста">
+    <meta name="author" content="Planetus">
+    <meta property="og:title" content="AI Humanizer - Определение и исправление AI-текста">
+    <meta property="og:description" content="Загрузите текст и узнайте, написан ли он искусственным интеллектом, а также сделайте его более человечным">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aisearch.icu/humanizer">
+    <title>AI Humanizer - Поиск ИИ сервисов</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='32' height='32' fill='none' stroke='%234c6ef5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2'/%3E%3Cpath d='m4.93 4.93 4.24 4.24'/%3E%3Cpath d='m14.83 14.83 4.24 4.24'/%3E%3Cpath d='M14.83 9.17 9.17 14.83'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>Поиск<span>ИИ</span></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Главная</a></li>
+                    <li><a href="/services">Сервисы</a></li>
+                    <li><a href="/about">О нас</a></li>
+                    <li><a href="/contacts">Контакты</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h2>AI Humanizer - Анализ и обработка текста</h2>
+                <p>Проверьте текст на признаки написания искусственным интеллектом и сделайте его более "человечным"</p>
+                
+                <div class="text-analysis-container">
+                    <div class="text-input-area">
+                        <div class="input-header">
+                            <h3>Введите текст для анализа</h3>
+                        </div>
+                        <textarea id="text-input" placeholder="Вставьте сюда текст для анализа (минимум 6 символов)..." rows="10"></textarea>
+                        <div class="text-controls">
+                            <span class="char-counter" id="char-counter">0 символов</span>
+                            <button class="clear-btn" id="clear-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                                Очистить
+                            </button>
+                        </div>
+                        <button class="analyze-btn" id="analyze-text-btn">
+                            <span class="button-text">Анализировать текст</span>
+                            <span class="analyze-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results-section" id="results-section" style="display: none;">
+                <div class="analysis-container" id="analysis-container">
+                    <div class="analysis-loading" id="analysis-loading">
+                        <div class="spinner">
+                            <svg viewBox="0 0 50 50" class="spinner-svg">
+                                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                            </svg>
+                        </div>
+                        <p>Анализируем текст...</p>
+                    </div>
+                    <div class="analysis-content" id="analysis-content" style="display: none;">
+                        <div class="thinking-container">
+                            <div class="thinking-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 16v-4"></path>
+                                    <path d="M12 8h.01"></path>
+                                </svg>
+                            </div>
+                            <p class="thinking-text" id="thinking-text"></p>
+                        </div>
+                        
+                        <div class="ai-score-container">
+                            <h4>Вероятность написания ИИ</h4>
+                            <div class="ai-score-meter">
+                                <div class="ai-score-bar" id="ai-score-bar">
+                                    <div class="ai-score-fill" id="ai-score-fill"></div>
+                                </div>
+                                <div class="ai-score-value" id="ai-score-value">0%</div>
+                            </div>
+                            <div class="ai-score-explanation" id="ai-score-explanation"></div>
+                        </div>
+                        
+                        <div class="humanize-section" id="humanize-section" style="display: none;">
+                            <div class="humanize-header">
+                                <h4>Предлагаем сделать текст более "человечным"</h4>
+                                <button class="humanize-btn" id="humanize-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                    </svg>
+                                    Переработать текст
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="humanized-result" id="humanized-result" style="display: none;">
+                            <div class="humanized-header">
+                                <h4>Переработанный текст</h4>
+                            </div>
+                            <div class="humanized-text" id="humanized-text"></div>
+                            <div class="humanized-actions">
+                                <button class="copy-btn" id="copy-humanized-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                    Копировать
+                                </button>
+                                <button class="reanalyze-btn" id="reanalyze-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 2v6h6"></path>
+                                        <path d="M3 8 12 17l9-9"></path>
+                                    </svg>
+                                    Проверить снова
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="watermark">
+            <div class="made-with-love">
+                <p>Сделано с любовью <a href="https://lolz.live/threads/7807080/" target="_blank" class="planetus">Planetus</a></p>
+            </div>
+            <div class="open-source">
+                <p>Открытый исходный код доступен на <a href="https://github.com/lordofsunshine/ai-search" target="_blank" class="github">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    GitHub
+                </a></p>
+            </div>
+        </footer>
+    </div>
+    <script src="/humanizer.js"></script>
+</body>
+</html> 
