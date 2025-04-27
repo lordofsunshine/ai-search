@@ -11,7 +11,7 @@
 
 <img src="https://i.ibb.co/vvYQTgyy/image.png" alt="AIsearch Preview" width="800">
 
-## 🚦 v.0.0.4
+## 🗺 v.0.0.5
 - Полный список изменений доступен на нашем [Discord сервере](https://discord.gg/FtvCbrc7ZU).
 
 ## ✨ Особенности
